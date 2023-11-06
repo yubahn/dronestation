@@ -1,99 +1,19 @@
 <!DOCTYPE html>
 <html>
     <head>
-      <style>
-        body {
-          font-family: Arial, sans-serif;
-          margin: 20px;
-        }
-  
-        h1 {
-          text-align: center;
-        }
-  
-        form {
-          margin: 0 auto;
-          padding: 20px;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-          background-color: #f9f9f9;
-        }
-  
-        label {
-          display: block;
-          margin-bottom: 5px;
-        }
-  
-        input[type="file"],
-        input[type="text"],
-        input[type="number"] {
-          width: 100%;
-          padding: 10px;
-          margin-bottom: 10px;
-          border: 1px solid #ccc;
-          border-radius: 3px;
-        }
-  
-        input[type="submit"] {
-          background-color: #007bff;
-          color: #fff;
-          padding: 10px 20px;
-          border: none;
-          border-radius: 3px;
-          cursor: pointer;
-        }
-  
-        input[type="submit"]:hover {
-          background-color: #0056b3;
-        }
-      </style>
       {% load static %}
     </head>
 
     <body>
-        <h1>이미지 처리 테스트</h1>
-
-        <form id="upload-form" method="post" enctype="multipart/form-data" action="">
-            <!-- 이미지 업로드 -->
-            <label for="img">이미지 업로드:</label>
-            <input type="file" name="img" id="img" accept="image/*"/>
-            <button type="button" id="upload-button">이미지 처리 시작</button>
+        <h1>테스트 ui</h1>
+        <form id="image-upload-form" action="/detection/detectionweb/" method="post" enctype="multipart/form-data">
+          {% comment %} {% csrf_token %} <!-- CSRF 토큰을 사용하는 경우 추가 --> {% endcomment %}
+          <input type="file" name="image">
+          <button type="submit">Upload Image</button>
         </form>
-        
-        <br>
         <div>
-            <img id="result-image" src="{{ image_url.image }}}" alt="image_url">
+          <img src="{{response_data.image}}">
         </div>
-
-        <script>
-            const apiurl = "http://127.0.0.1:8000/detection/test/";
-            $(document).ready(function () {
-                // 업로드 버튼 클릭 이벤트 리스너
-                $("#upload-button").click(function () {
-                    // 선택한 파일 가져오기
-                    const selectedFile = $("#img")[0].files[0];
-        
-                    // FormData 객체를 사용하여 파일을 생성
-                    const formData = new FormData();
-                    formData.append("img", selectedFile);
-        
-                    // AJAX 요청을 보냅니다.
-                    $.ajax({
-                        type: "POST",
-                        url: apiurl,
-                        data: formData,
-                        processData: false, // 데이터 처리 방식을 비활성화합니다.
-                        contentType: false, // 컨텐츠 타입을 비활성화합니다.
-                        success: function (data) {
-                            // 결과 이미지를 동적으로 업데이트
-                        },
-                        error: function (error) {
-                            console.log("Image URL request error:", error)
-                        }
-                    });
-                });
-            });
-        </script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </body>
 </html>

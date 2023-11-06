@@ -1,16 +1,46 @@
 <!DOCTYPE html>
 <html>
     <head>
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
       {% load static %}
     </head>
-
     <body>
-        <h1>테스트 ui</h1>
-        <form id="image-upload-form" action="/detection/detectionapi/" method="post" enctype="multipart/form-data">
-          {% csrf_token %} <!-- CSRF 토큰을 사용하는 경우 추가 -->
+      <h1>테스트 UI</h1>
+      <form id="image-upload-form" action="/detection/detectionweb/" method="post" enctype="multipart/form-data">
+          {% csrf_token %} <!-- CSRF 토큰 추가 -->
           <input type="file" name="image">
           <button type="submit">Upload Image</button>
-        </form>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    </body>
+      </form>
+      <div>
+          <img id="result-image" src="{{ response_data.image }}" style="display:none;">
+      </div>
+
+      <script>
+          // 이미지 업로드 후 결과 이미지를 표시하는 함수
+          function updateResultImage(imageUrl) {
+              $('#result-image').attr('src', imageUrl);
+              $('#result-image').show();
+          }
+  
+          // 이미지 업로드 폼 제출 후 AJAX 요청
+          $('#image-upload-form').submit(function (e) {
+              e.preventDefault();
+              var formData = new FormData(this);
+  
+              $.ajax({
+                  type: 'POST',
+                  url: '/detection/detectionweb/',
+                  data: formData,
+                  processData: false,
+                  contentType: false,
+                  success: function (data) {
+                      updateResultImage(data.image);
+                  },
+                  error: function (xhr, textStatus, error) {
+                      console.log(xhr.status, textStatus, error);
+                  }
+              });
+          });
+      </script>
+  </body>
 </html>

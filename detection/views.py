@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
@@ -24,10 +25,9 @@ class DetectionWeb(APIView):
     
     def post(self, request):
         # 사용자가 업로드한 이미지 원본 서버 저장 및 서버 경로를 DB에 저장
-        upload_img = request.FILES.get('img')
+        upload_img = request.FILES.get('image')
         img_instance = InputImageModel(image = upload_img)
         img_instance.save()
-        print(upload_img)
         
         # 저장된 원본 이미지를 byte 형식으로 읽음
         uploaded_img = InputImageModel.objects.filter().last()
@@ -60,9 +60,12 @@ class DetectionWeb(APIView):
             image_bytes = image_file.read()
             
         #image_bytes 를 전달해주면 됨
-        result = image_bytes
+        response_data = {
+            'image': inference_img
+        }
         
-        return render(request, 'detection/index1.html')
+        print(response_data)
+        return render(request, "detection/index1.html", {'response_data': f'/response_data'})
 
 class DetectionAPI(APIView):
     def get(self, request):
@@ -88,14 +91,24 @@ class DetectionAPI(APIView):
         img_bytes = uploaded_img.image.read()
         img = im.open(io.BytesIO(img_bytes))
         
+        # 잘라낼 부분의 좌표 
+        width, height = img.size
+        left = 600
+        top = height - 1000
+        right = 4000
+        bottom = height
+
+        # 이미지 자르기
+        cropped_image = img.crop((left, top, right, bottom))
+        
         # yolov5 detection
         path_hubconfig = "yolov5"
-        path_weightfile = "yolov5/weight/yolov5s.pt"  # or any custom trained model
+        path_weightfile = "yolov5/weight/propeller_ep1000.pt"  
 
-        model = torch.hub.load(path_hubconfig, 'custom',    # 'custom' 가능
+        model = torch.hub.load(path_hubconfig, 'custom',
                             path=path_weightfile, source='local')
 
-        results = model(img, size=640)
+        results = model(cropped_image, size=640)
         print('result ::::::: ',results)
         results.render()
         
