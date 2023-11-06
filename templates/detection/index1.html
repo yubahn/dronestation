@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      {% load static %}
+    </head>
+
+    <body>
+        <h1>테스트 ui</h1>
+        <form id="image-upload-form" action="/detection/detectionapi/" method="post" enctype="multipart/form-data">
+          {% csrf_token %} <!-- CSRF 토큰을 사용하는 경우 추가 -->
+          <input type="file" name="image">
+          <button type="submit">Upload Image</button>
+        </form>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </body>
+</html>
