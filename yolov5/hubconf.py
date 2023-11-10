@@ -151,7 +151,7 @@ if __name__ == '__main__':
     # Model
     model = _create(name=opt.model, pretrained=True, channels=3, classes=80, autoshape=True, verbose=True)
     # model = custom(path='path/to/model.pt')  # custom
-
+    
     # Images
     imgs = [
         'data/images/zidane.jpg',  # filename
@@ -163,6 +163,7 @@ if __name__ == '__main__':
 
     # Inference
     results = model(imgs, size=320)  # batched inference
+
 
     # Results
     results.print()

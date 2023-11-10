@@ -1,3 +1,4 @@
+import cv2
 from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
@@ -42,7 +43,7 @@ class DetectionWeb(APIView):
                             path=path_weightfile, source='local')
 
         results = model(img, size=640)
-        print('result ::::::: ',results)
+        
         results.render()
         
         # yolo 결과 jpg 형식 media 루트에 저장
@@ -105,11 +106,13 @@ class DetectionAPI(APIView):
         path_hubconfig = "yolov5"
         path_weightfile = "yolov5/weight/propeller_ep1000.pt"  
 
+        # 저장소, 모델 or 모듈, 가중치 파일, 다운로드 위치
+        #torch.hub.load(저장소 패스, 모델 패스, 가중치 패스, gitgub or local)
         model = torch.hub.load(path_hubconfig, 'custom',
                             path=path_weightfile, source='local')
-
+        
         results = model(cropped_image, size=640)
-        print('result ::::::: ',results)
+        
         results.render()
         
         # yolo 결과 jpg 형식 media 루트에 저장
@@ -134,3 +137,4 @@ class DetectionAPI(APIView):
         file_name_index += 1
 
         return JsonResponse(result_data)
+    

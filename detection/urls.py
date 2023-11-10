@@ -7,3 +7,4 @@ urlpatterns = [
     path("detectionweb/", DetectionWeb.as_view()),
     path("detectionapi/", DetectionAPI.as_view()),
 ]
+1202
