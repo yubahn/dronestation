@@ -14,3 +14,13 @@ class InputImageModel(models.Model):
 class OutputImageModel(models.Model):
     image = models.ImageField("yolo 결과 이미지", upload_to='yolo_out', blank=True)
     status = models.CharField(max_length=10)
+    
+class FlightData(models.Model):
+    flight = models.IntegerField()
+    timestamp = models.IntegerField()
+    battery_voltage = models.FloatField(default=0)
+    using = 'second_db'
+    
+    class Meta:
+        managed = False  # 모델을 데이터베이스에 생성하지 않도록 설정
+        db_table = 'FlightData'
