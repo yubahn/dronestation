@@ -69,7 +69,7 @@ class DetectionWeb(APIView):
         return render(request, "detection/index1.html", {'response_data': f'/response_data'})
 
 # Drone Appearance Abnormal detection
-class DaDetectionAPI(APIView):
+class ImgDetectionAPI(APIView):
     def get(self, request):
         return render(request, 'detection/index1.html')
     
@@ -96,25 +96,33 @@ class DaDetectionAPI(APIView):
         img_bytes = uploaded_img.image.read()
         img = im.open(io.BytesIO(img_bytes))
         
-        # 잘라낼 부분의 좌표 
-        width, height = img.size
-        left = 600
-        top = height - 1000
-        right = 4000
-        bottom = height
-
-        # 이미지 자르기
-        cropped_image = img.crop((left, top, right, bottom))
-        
         # yolov5 detection
         path_hubconfig = "yolov5"
+        propeller_weight = "propeller_yolov5m_aug_ep200.pt"
+        landing_weight = "landing_yolov5m_aug_ep2000.pt"
         
-        # 0 : top(propeller), 1 : bottom(landinggear)
-        if img_type == 0:
-            path_weightfile = "yolov5/weight/propeller_ep1000.pt"  
+        # 0 : bottom(landinggear), 1 : top(propeller)
+        if img_type == "0":
+            # 잘라낼 부분의 좌표 
+            # 결과 3400*1000
+            width, height = img.size
+            left = 2500
+            top = 1300
+            right = 3200
+            bottom = 2700
+
+            path_weightfile = f"yolov5/weight/{landing_weight}"  
         else:
-            path_weightfile = "yolov5/weight/propeller_ep1000.pt"
+            width, height = img.size
+            left = 1100
+            top = height - 1000
+            right = 3700
+            bottom = height
         
+            path_weightfile = f"yolov5/weight/{propeller_weight}"
+        
+        # 이미지 자르기
+        cropped_image = img.crop((left, top, right, bottom))
         # 저장소, 모델 or 모듈, 가중치 파일, 다운로드 위치
         # torch.hub.load(저장소 패스, 모델 패스, 가중치 패스, gitgub or local)
         model = torch.hub.load(path_hubconfig, 'custom',

@@ -634,7 +634,7 @@ class DetectMultiBackend(nn.Module):
 
 class AutoShape(nn.Module):
     # YOLOv5 input-robust model wrapper for passing cv2/np/PIL/torch inputs. Includes preprocessing, inference and NMS
-    conf = 0.25  # NMS confidence threshold
+    conf = 0.70  # NMS confidence threshold
     iou = 0.45  # NMS IoU threshold
     agnostic = False  # NMS class-agnostic
     multi_label = False  # NMS multiple labels per box
@@ -762,7 +762,7 @@ class Detections:
                 if show or save or render or crop:
                     annotator = Annotator(im, example=str(self.names))
                     for *box, conf, cls in reversed(pred):  # xyxy, confidence, class
-                        # label = f'{self.names[int(cls)]} {conf:.2f}'
+                        #label = f'{self.names[int(cls)]} {conf:.2f}'
                         label = f'{self.names[int(cls)]}'
                         if crop:
                             file = save_dir / 'crops' / self.names[int(cls)] / self.files[i] if save else None
